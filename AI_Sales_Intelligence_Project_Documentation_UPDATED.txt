@@ -1,0 +1,803 @@
+PROJECT IDEA DOCUMENTATION
+============================
+
+Project Title:
+AI-Powered Daily Sales Intelligence & Business Reporting System
+
+1. PROJECT OVERVIEW
+-------------------
+This project is an end-to-end Sales Intelligence system that converts raw company sales
+data into useful business information and automatically explains what is happening in
+the business.
+
+The system is designed for a business owner or manager who may not have time to study
+large Excel/CSV files or interpret multiple dashboards every day.
+
+Instead of only displaying graphs, the system analyzes sales, revenue, cost, profit,
+customers, products, regions, discounts and trends, identifies important changes or
+problems, and produces a simple daily business report.
+
+The report can be shown inside the application and sent to the manager through email.
+WhatsApp notification/report delivery can be added as a later feature.
+
+2. PROBLEM STATEMENT
+--------------------
+Businesses generate large amounts of transactional data every day. Although dashboards
+can display charts and KPIs, a non-technical manager may still have difficulty
+understanding:
+
+- What happened today?
+- Did revenue increase or decrease?
+- Did profit improve or fall?
+- Which products are performing well?
+- Which regions are underperforming?
+- Are new customers increasing?
+- Are discounts reducing profit?
+- Is there anything unusual that requires attention?
+- What should the manager focus on?
+
+Usually, a person has to manually analyze the data and explain the results.
+
+This creates dependency on analysts, consumes time, and makes daily decision-making slower.
+
+3. PROPOSED SOLUTION
+--------------------
+Build an automated Sales Intelligence pipeline.
+
+The system will:
+
+1. Receive raw sales data.
+2. Clean and validate the data.
+3. Store/process the data.
+4. Calculate important business KPIs.
+5. Compare current performance with previous periods.
+6. Detect important changes, trends and warning conditions.
+7. Generate an understandable business summary.
+8. Use an LLM to convert calculated facts into a natural-language daily report.
+9. Display the information through a dashboard.
+10. Send the report through email.
+11. Optionally support WhatsApp notifications in a later stage.
+
+4. MAIN IDEA
+------------
+The key difference from a normal dashboard is:
+
+NORMAL DASHBOARD:
+Raw Data -> Charts -> Manager interprets everything
+
+OUR SYSTEM:
+Raw Data -> Analysis -> Important Findings -> AI Explanation -> Manager
+
+The LLM will NOT be responsible for calculating business numbers. Python/SQL will
+calculate the facts first. The LLM will receive verified metrics and findings and
+convert them into an easy-to-understand explanation.
+
+5. EXAMPLE DAILY REPORT
+-----------------------
+DAILY BUSINESS REPORT - 29 June
+
+Revenue: Rs. 8.42 lakh (+12.4%)
+Profit: Rs. 1.61 lakh (+8.2%)
+Orders: 143 (+9.1%)
+New Customers: 38 (+15.2%)
+
+TOP PERFORMER:
+Laptop Pro generated the highest revenue.
+
+WARNING:
+Electronics revenue increased, but its profit margin decreased because of higher
+discounts.
+
+REGIONAL ALERT:
+Gujarat sales decreased by 11% compared with the previous period.
+
+RECOMMENDED FOCUS:
+Review discount levels for Electronics and investigate the decline in Gujarat sales.
+
+The exact values above are examples of the final report format, not fixed project results.
+
+6. DATA TO BE USED
+------------------
+The initial project dataset will contain transactional sales records.
+
+Important columns include:
+
+- Order_ID
+- Order_Date
+- Customer_ID
+- Product
+- Category
+- Region
+- City
+- Sales_Channel
+- Customer_Type
+- Quantity
+- Unit_Price
+- Discount_Rate
+- Discount_Amount
+- Revenue
+- Cost
+- Profit
+- Profit_Margin
+- Payment_Method
+- Order_Status
+
+A two-month synthetic raw dataset has been prepared for the first implementation.
+
+7. CORE SYSTEM PIPELINE
+-----------------------
+                    RAW SALES DATA
+                           |
+                           v
+                    DATA INGESTION
+                           |
+                           v
+                    DATA CLEANING
+                           |
+                           v
+                 DATA TRANSFORMATION
+                           |
+                           v
+                  KPI/METRIC ENGINE
+                           |
+                           v
+              TREND & ANOMALY ANALYSIS
+                           |
+              +------------+------------+
+              |                         |
+              v                         v
+         DASHBOARD                 VERIFIED FACTS
+                                        |
+                                        v
+                                  LLM REPORTING
+                                        |
+                              +---------+---------+
+                              |                   |
+                              v                   v
+                            EMAIL              UI REPORT
+                              |
+                              v
+                     OPTIONAL WHATSAPP
+
+8. WHAT THE ANALYSIS ENGINE WILL CALCULATE
+------------------------------------------
+Daily:
+- Total revenue
+- Total cost
+- Total profit
+- Profit margin
+- Number of orders
+- Quantity sold
+- New customers
+- Returning customers
+- Average order value
+
+Product:
+- Top products by revenue
+- Top products by profit
+- Low-performing products
+- Product-wise margin
+- Product-wise quantity
+
+Region:
+- Revenue by region
+- Profit by region
+- Regional growth
+- Underperforming regions
+
+Customer:
+- New vs returning customers
+- Top customers
+- Customer contribution to revenue
+- Customer activity trends
+
+Discount:
+- Average discount
+- Revenue by discount range
+- Profit margin by discount range
+- Identification of high-discount/low-profit situations
+
+Time:
+- Daily trends
+- Weekly comparison
+- Monthly comparison
+- Growth/decline percentages
+
+9. BUSINESS RULES / ALERTS
+---------------------------
+The first version can use transparent rule-based logic.
+
+Examples:
+
+- If revenue decreases significantly -> Revenue Warning
+- If profit decreases while revenue increases -> Profitability Warning
+- If a region falls significantly -> Regional Alert
+- If discount increases and margin falls -> Discount Warning
+- If a product suddenly drops in sales -> Product Alert
+- If new customers fall -> Customer Acquisition Alert
+
+This makes the system explainable.
+
+Later, machine-learning-based anomaly detection can be added.
+
+10. ROLE OF THE LLM
+-------------------
+The LLM is NOT the primary analytics engine.
+
+Python and SQL will calculate verified facts.
+
+Example facts sent to the LLM:
+
+Revenue change: +12.4%
+Profit change: +8.2%
+Gujarat revenue change: -11%
+Electronics margin change: -4.3%
+Top product: Laptop Pro
+
+The LLM converts these facts into a concise business report.
+
+This reduces the risk of the LLM inventing calculations.
+
+11. NLP REQUIREMENT
+-------------------
+A transformer/NLP model is NOT required for the first version.
+
+The initial system mainly works with structured numerical/tabular data.
+
+LLM integration is sufficient for natural-language report generation.
+
+NLP/transformers can be introduced later if the project adds unstructured text such as:
+
+- Customer reviews
+- Complaints
+- Support tickets
+- Product feedback
+
+Possible future NLP features:
+- Sentiment analysis
+- Complaint categorization
+- Topic extraction
+- Customer feedback summarization
+
+12. DASHBOARD
+-------------
+The dashboard should contain:
+
+Overview:
+- Revenue
+- Profit
+- Orders
+- Customers
+- Profit margin
+
+Charts:
+- Revenue trend
+- Profit trend
+- Product performance
+- Regional performance
+- New vs returning customers
+- Discount vs profitability
+
+Insights panel:
+- Important positive findings
+- Warnings
+- Business recommendations
+
+Filters:
+- Date
+- Product
+- Category
+- Region
+- Sales channel
+
+13. AUTOMATED DAILY REPORT
+--------------------------
+The system should be able to run at a scheduled time.
+
+Example:
+
+Every evening at 7:00 PM:
+
+1. Read latest sales data.
+2. Calculate today's KPIs.
+3. Compare with previous day/week.
+4. Detect important changes.
+5. Create verified findings.
+6. Send findings to LLM.
+7. Generate daily business report.
+8. Save the report.
+9. Send email to manager.
+
+14. EMAIL / WHATSAPP
+--------------------
+Email is a planned feature.
+
+The email will contain:
+- Daily KPIs
+- Major changes
+- Top performer
+- Warnings
+- Suggested focus areas
+
+WhatsApp can be implemented later using an appropriate official messaging API/provider.
+
+15. TECHNOLOGY STACK
+--------------------
+Initial stack:
+
+Programming:
+- Python
+
+Data:
+- Pandas
+- NumPy
+- SQL
+- PostgreSQL
+
+Visualization:
+- Matplotlib/Seaborn for analysis
+- Power BI or a web dashboard for presentation
+
+Backend/API:
+- Python FastAPI or Flask
+
+LLM:
+- An LLM API such as OpenAI/Gemini/Mistral
+
+Frontend:
+- React (optional for the first version; useful for the final product)
+
+Automation:
+- Python scheduler / cron / cloud scheduler
+
+Notifications:
+- Email via SMTP/provider
+- WhatsApp later
+
+16. IMPLEMENTATION PLAN
+-----------------------
+PHASE 1 - DATA UNDERSTANDING
+-----------------------------
+Goal:
+Understand the two-month sales dataset.
+
+Tasks:
+- Load CSV using Pandas.
+- Inspect rows and columns.
+- Check data types.
+- Check missing values.
+- Check duplicates.
+- Check incorrect values.
+- Understand each column.
+
+Output:
+A clean understanding of the dataset.
+
+PHASE 2 - DATA CLEANING
+-----------------------
+Tasks:
+- Handle missing values.
+- Remove/handle duplicates.
+- Convert dates correctly.
+- Validate numerical columns.
+- Check negative/invalid values.
+- Validate revenue, cost and profit relationships.
+
+Output:
+Clean dataset.
+
+PHASE 3 - EXPLORATORY DATA ANALYSIS
+------------------------------------
+Tasks:
+- Daily revenue analysis.
+- Daily profit analysis.
+- Product analysis.
+- Regional analysis.
+- Customer analysis.
+- Discount analysis.
+- Trend analysis.
+
+Output:
+Business findings and charts.
+
+PHASE 4 - KPI ENGINE
+--------------------
+Create reusable Python functions such as:
+
+calculate_daily_kpis()
+calculate_product_performance()
+calculate_region_performance()
+calculate_customer_metrics()
+calculate_discount_impact()
+compare_periods()
+
+Output:
+Structured verified metrics.
+
+PHASE 5 - BUSINESS RULE ENGINE
+------------------------------
+Create rules that identify important situations.
+
+Example:
+if revenue_change < -10%:
+    create_revenue_alert()
+
+if revenue_change > 0 and profit_change < 0:
+    create_profitability_alert()
+
+if discount_change > threshold and margin_change < threshold:
+    create_discount_alert()
+
+Output:
+Structured findings/alerts.
+
+PHASE 6 - DASHBOARD
+-------------------
+Build the dashboard using the calculated metrics.
+
+Output:
+Interactive business dashboard.
+
+PHASE 7 - LLM REPORT GENERATION
+-------------------------------
+Send only verified metrics and findings to the LLM.
+
+Prompt structure:
+
+"You are a business analyst. Based only on the verified metrics below,
+write a concise daily business report. Do not invent numbers."
+
+Then provide the metrics.
+
+Output:
+Human-readable daily report.
+
+PHASE 8 - EMAIL AUTOMATION
+---------------------------
+Create an automated email containing the daily report.
+
+Output:
+Manager receives the report without manually opening the dataset.
+
+PHASE 9 - SCHEDULING
+--------------------
+Schedule the pipeline to execute automatically every day.
+
+Output:
+Fully automated daily reporting system.
+
+PHASE 10 - DEPLOYMENT
+---------------------
+Deploy the application and required services to the cloud.
+
+17. FIRST STEP
+--------------
+DO NOT start with the LLM.
+
+The first step is:
+
+STEP 1:
+Load the provided two-month CSV into a Jupyter Notebook using Pandas.
+
+Then perform:
+
+import pandas as pd
+
+df = pd.read_csv("sales_analytics_2_month_raw_dataset.csv")
+
+df.head()
+df.shape
+df.info()
+df.isnull().sum()
+df.duplicated().sum()
+
+The purpose is to understand the raw data before building anything else.
+
+18. PROJECT DEVELOPMENT ORDER
+-----------------------------
+Do the project in this exact order:
+
+1. Dataset understanding
+2. Data cleaning
+3. EDA
+4. Business KPI calculations
+5. Business rules/alerts
+6. Dashboard
+7. LLM report generation
+8. Email automation
+9. Scheduling
+10. Optional WhatsApp
+11. Deployment
+
+19. FINAL PROJECT OUTPUT
+------------------------
+The completed system should provide:
+
+A. Interactive Dashboard
+B. Automated KPI calculations
+C. Business alerts
+D. AI-generated daily business summary
+E. Email reports
+F. Optional WhatsApp reports
+G. Historical reports
+H. Trend comparisons
+I. Explainable recommendations
+
+20. FUTURE ENHANCEMENTS
+----------------------
+Possible advanced features:
+
+- ML-based anomaly detection
+- Sales forecasting
+- Demand prediction
+- Customer churn prediction
+- Customer segmentation
+- Inventory prediction
+- NLP sentiment analysis
+- Customer feedback summarization
+- Natural-language dashboard queries
+- "Ask your business data" chatbot
+- Role-based access
+- Multi-company support
+
+21. FINAL PROJECT VISION
+------------------------
+The long-term vision is:
+
+"An intelligent business assistant that reads a company's sales data every day,
+understands what changed, identifies important business problems and opportunities,
+explains them in simple language, and automatically delivers a concise report to
+the decision-maker."
+
+The project therefore combines:
+Data Analytics + SQL + Business Intelligence + Automation + LLMs
+
+ML/NLP can be added progressively after the core pipeline is working.
+
+22. INITIAL MILESTONE
+---------------------
+The first milestone is NOT the dashboard and NOT the LLM.
+
+Milestone 1:
+Successfully load, understand and clean the two-month dataset.
+
+Milestone 2:
+Generate daily/product/region/customer KPIs.
+
+Milestone 3:
+Generate automatic business findings.
+
+Milestone 4:
+Create the dashboard.
+
+Milestone 5:
+Add LLM-generated daily reports.
+
+Milestone 6:
+Automate email delivery.
+
+Milestone 7:
+Deploy the complete system.
+
+
+23. SYNTHETIC DAILY SALES DATA GENERATOR
+----------------------------------------
+To demonstrate the live/daily-updating nature of the project without requiring
+access to a real company's internal database, the system will include a
+Synthetic Daily Sales Data Generator.
+
+The generator will create realistic new sales transactions for each simulated
+business day using patterns learned from the existing two-month historical
+dataset.
+
+The generator will NOT simply create arbitrary random numbers. It will preserve
+realistic relationships between:
+
+- Products
+- Categories
+- Regions
+- Customers
+- Quantities
+- Prices
+- Discounts
+- Revenue
+- Cost
+- Profit
+- Profit Margin
+- Sales channels
+- Payment methods
+
+The overall flow will be:
+
+Historical Dataset
+        |
+        v
+Historical Pattern Analysis
+        |
+        v
+Synthetic Daily Data Generator
+        |
+        v
+Generate New Daily Transactions
+        |
+        v
+Append Transactions
+        |
+        v
+KPI + Alert Engine
+        |
+        v
+Dashboard + AI Daily Report
+
+24. PYTHON SCRIPT: DAILY_DATA_GENERATOR.PY
+------------------------------------------
+A Python script named:
+
+daily_data_generator.py
+
+will be developed as part of the project.
+
+The script will:
+
+1. Load the cleaned historical sales dataset.
+2. Inspect historical distributions.
+3. Generate a realistic number of new orders for a simulated day.
+4. Create unique Order_ID values.
+5. Generate/select customer IDs and customer types.
+6. Select products according to historical product patterns.
+7. Generate realistic quantities.
+8. Use realistic prices based on historical data.
+9. Generate discounts within realistic ranges.
+10. Calculate Revenue.
+11. Calculate Cost.
+12. Calculate Profit.
+13. Calculate Profit_Margin.
+14. Assign region, city, sales channel and payment method.
+15. Set the new Order_Date.
+16. Validate the generated records.
+17. Append the new transactions to the main dataset/database.
+
+During development, the script can be executed with:
+
+python daily_data_generator.py
+
+Later, this script will be executed automatically by a scheduler.
+
+25. REALISTIC DATA GENERATION
+-----------------------------
+The generator will use the historical dataset to estimate realistic distributions.
+
+For example, if historical data shows that:
+
+- Electronics represents a certain percentage of orders
+- Maharashtra contributes a certain percentage of sales
+- Typical quantity is 1-5 units
+- Discounts are usually between certain ranges
+- Certain products sell more frequently
+
+the generator will preserve those patterns while introducing controlled variation.
+
+Business relationships will also be preserved.
+
+For example:
+
+Revenue = Quantity × Unit Price after discount
+
+Profit = Revenue - Cost
+
+Profit Margin = Profit / Revenue × 100
+
+This is important because the generated data must behave like a real business
+dataset and should be suitable for testing analytics, alerts and AI reports.
+
+26. SIMULATED LIVE DATA MODE
+----------------------------
+The project will support a simulated live-data mode.
+
+The historical dataset acts as the starting point.
+
+For example:
+
+Day 1:
+Historical data + August 16 transactions
+
+Day 2:
+Historical data + August 16 + August 17 transactions
+
+Day 3:
+Historical data + August 16 + August 17 + August 18 transactions
+
+After each update, the analytics pipeline will run again.
+
+This allows the project demonstration to show a continuously growing dataset
+and a dashboard/report that changes as new transactions arrive.
+
+27. FUTURE REAL DATA SOURCE
+---------------------------
+The synthetic generator is primarily for development, testing and demonstration.
+
+When the project is connected to a real company, the generator can be replaced
+by a real data source such as:
+
+- POS system
+- E-commerce platform API
+- CRM system
+- ERP system
+- Scheduled Excel/CSV file
+- PostgreSQL/MySQL database
+- Cloud data warehouse
+
+The rest of the pipeline remains unchanged.
+
+Therefore:
+
+Synthetic Generator
+        OR
+Real Business Data Source
+        |
+        v
+Same Analytics Pipeline
+
+28. UPDATED END-TO-END PROJECT PIPELINE
+----------------------------------------
+The final system will operate as:
+
+Historical Data + New Daily Data
+              |
+              v
+        Data Ingestion
+              |
+              v
+        Data Cleaning
+              |
+              v
+       Data Validation
+              |
+              v
+         KPI Engine
+              |
+              v
+    Trend & Alert Detection
+              |
+              v
+     Verified Business Facts
+              |
+              v
+        LLM Reporting
+              |
+       +------+------+
+       |             |
+       v             v
+   Dashboard       Email
+                     |
+                     v
+               WhatsApp
+              (optional)
+
+During development, the Synthetic Daily Sales Data Generator supplies the
+"New Daily Data" component.
+
+29. IMPLEMENTATION ORDER FOR THE LIVE FEATURE
+---------------------------------------------
+The live/simulated update feature will be developed only after the historical
+dataset has been understood and cleaned.
+
+The order will be:
+
+1. Understand the historical dataset
+2. Clean the historical dataset
+3. Validate business relationships
+4. Build daily_data_generator.py
+5. Test generated transactions
+6. Append generated transactions
+7. Build KPI engine
+8. Build business alert engine
+9. Build dashboard
+10. Integrate LLM report generation
+11. Automate email reports
+12. Add scheduling
+13. Add optional WhatsApp delivery
+14. Deploy
+
+This keeps the project technically organized and prevents the LLM or dashboard
+from being built before the underlying data pipeline is reliable.

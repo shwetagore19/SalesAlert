@@ -1,0 +1,803 @@
+AI SALES INTELLIGENCE — TECH STACK & REQUIREMENTS
+=================================================
+
+PROJECT:
+AI Sales Intelligence & Daily Business Newspaper
+
+PURPOSE:
+A full-stack system that receives historical and continuously updated sales data,
+calculates KPIs, detects important business changes, generates an LLM-powered
+daily business summary, displays it in a dashboard, and sends it by email and
+optionally WhatsApp.
+
+=================================================
+1. ARCHITECTURE
+=================================================
+
+Historical Sales Data
+        |
+        v
+Synthetic Daily Data Generator
+        |
+        v
+Python Data Pipeline
+        |
+        v
+PostgreSQL
+        |
+        +------------------+
+        |                  |
+        v                  v
+   KPI Engine         Alert Engine
+        |                  |
+        +--------+---------+
+                 |
+                 v
+             FastAPI
+                 |
+        +--------+---------+
+        |                  |
+        v                  v
+      React             LLM API
+    Dashboard              |
+                           v
+                    Daily Newspaper
+                           |
+                    +------+------+
+                    |             |
+                    v             v
+                  Email       WhatsApp
+
+During development, the Synthetic Daily Data Generator simulates new business
+transactions. In a real deployment it can be replaced by a POS/API/CRM/ERP
+data source.
+
+=================================================
+2. PROGRAMMING LANGUAGES
+=================================================
+
+Python
+- Data cleaning
+- Data analysis
+- Synthetic data generation
+- KPI calculations
+- Alert detection
+- LLM integration
+- Automation
+- FastAPI backend
+
+JavaScript
+- React frontend
+- Dashboard
+- API integration
+
+SQL
+- Database queries
+- Aggregations
+- Historical comparisons
+
+HTML/CSS
+- Frontend structure and styling
+
+=================================================
+3. DATA SCIENCE / DATA GENERATION
+=================================================
+
+Libraries:
+
+pandas
+numpy
+faker
+scikit-learn
+openpyxl
+python-dateutil
+
+Main script:
+
+daily_data_generator.py
+
+Responsibilities:
+- Load historical data
+- Inspect historical distributions
+- Generate realistic daily transactions
+- Create unique Order_IDs
+- Generate customer/order fields
+- Calculate revenue, cost, profit and margin
+- Validate generated data
+- Append/save new records
+
+=================================================
+4. ANALYTICS / KPI ENGINE
+=================================================
+
+Python + Pandas + SQL
+
+Core KPIs:
+
+Revenue
+Cost
+Profit
+Profit Margin
+Total Orders
+Quantity Sold
+Average Order Value
+New Customers
+Returning Customers
+Customer Growth
+Best/Worst Products
+Best/Worst Regions
+Category Sales
+Channel Sales
+Discount Impact
+Daily/Weekly/Monthly Growth
+
+Comparisons:
+
+Today vs Yesterday
+Today vs Previous Week
+Current Week vs Previous Week
+Current Month vs Previous Month
+Product vs Product
+Region vs Region
+
+=================================================
+5. BUSINESS ALERT ENGINE
+=================================================
+
+Initially use rule-based Python logic.
+
+Examples:
+
+Revenue drops significantly
+Profit margin drops
+Product sales suddenly decrease
+Costs increase unusually
+New customers decrease
+A region/product shows unusual growth
+
+Important rule:
+
+Python/SQL calculates the numerical facts FIRST.
+
+The LLM explains those verified facts. It should not be responsible for
+calculating important KPIs.
+
+=================================================
+6. BACKEND
+=================================================
+
+RECOMMENDED:
+
+FastAPI + Python
+
+Why:
+- Same ecosystem as data science
+- Easy Pandas integration
+- Easy LLM integration
+- Automatic API documentation
+- Suitable for data/ML applications
+
+Libraries:
+
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+sqlalchemy
+psycopg2-binary
+pandas
+numpy
+httpx
+
+Optional later:
+redis
+celery
+
+Suggested endpoints:
+
+GET /api/dashboard/today
+GET /api/dashboard/trends
+GET /api/sales
+GET /api/products/performance
+GET /api/regions/performance
+GET /api/alerts
+GET /api/reports/latest
+POST /api/daily-update
+
+=================================================
+7. FRONTEND
+=================================================
+
+RECOMMENDED:
+
+React.js
+
+Libraries:
+
+react
+react-dom
+react-router-dom
+axios
+recharts
+lucide-react
+tailwindcss
+
+Optional:
+framer-motion
+
+Pages:
+
+1. Overview Dashboard
+2. Sales Analytics
+3. Product Performance
+4. Regional Performance
+5. Customer Analytics
+6. Alerts & Opportunities
+7. Daily Business Newspaper
+8. Data/Pipeline Status
+
+The dashboard should answer:
+
+WHAT happened?
+WHY did it happen?
+WHAT needs attention?
+WHAT should the manager focus on?
+
+=================================================
+8. FRONTEND API CONNECTOR
+=================================================
+
+Use Axios.
+
+Suggested structure:
+
+frontend/
+  src/
+    services/
+      api.js
+      dashboardApi.js
+      salesApi.js
+      alertApi.js
+      reportApi.js
+
+Flow:
+
+React
+  |
+  v
+Axios API Connector
+  |
+  v
+FastAPI
+  |
+  v
+Database / Analytics / Reports
+
+The connector handles:
+- GET/POST requests
+- API base URL
+- Query parameters
+- Errors
+- Loading states
+
+=================================================
+9. DATABASE
+=================================================
+
+RECOMMENDED:
+
+PostgreSQL
+
+Why:
+- Structured sales data
+- Strong SQL analytics
+- Aggregations
+- Date-based queries
+- Production-ready
+
+Suggested tables:
+
+sales
+customers
+products
+regions
+daily_kpis
+alerts
+daily_reports
+
+Sales fields:
+
+order_id
+order_date
+customer_id
+product
+category
+region
+city
+sales_channel
+customer_type
+quantity
+unit_price
+discount_rate
+discount_amount
+revenue
+cost
+profit
+profit_margin
+payment_method
+order_status
+
+=================================================
+10. DATABASE CONNECTOR
+=================================================
+
+SQLAlchemy + psycopg2-binary
+
+Flow:
+
+FastAPI
+  |
+  v
+SQLAlchemy
+  |
+  v
+PostgreSQL
+
+Responsibilities:
+- Insert daily transactions
+- Query historical sales
+- Retrieve KPI data
+- Save alerts
+- Save reports
+- Supply dashboard data
+
+=================================================
+11. LLM / AI LAYER
+=================================================
+
+The project DOES need an LLM.
+
+The LLM converts verified business facts into human-readable language.
+
+Example facts:
+
+Revenue: +12%
+Profit: -4%
+Orders: +8%
+Top product: Laptop Pro
+Worst product: Keyboard X
+Best region: Maharashtra
+Margin change: -3.2%
+
+Possible output:
+
+"Today's revenue increased by 12%, mainly driven by Laptop Pro sales.
+However, profit declined by 4% because higher discounting reduced margins.
+Maharashtra was the strongest-growing region. Management should review
+discount levels and investigate the decline in Keyboard X."
+
+Possible providers:
+
+OpenAI
+Google Gemini
+Mistral
+Anthropic
+
+Use ONE provider initially.
+
+=================================================
+12. NLP / TRANSFORMERS
+=================================================
+
+A custom NLP Transformer is NOT required for Version 1.
+
+We will use an existing LLM through an API.
+
+Later, ML/NLP can be added for:
+
+- Anomaly detection
+- Forecasting
+- Customer segmentation
+- Sentiment analysis
+- Automatic classification
+
+We do NOT need to train a Transformer from scratch for the Daily Business
+Newspaper feature.
+
+=================================================
+13. LLM CONNECTOR
+=================================================
+
+Suggested:
+
+backend/
+  services/
+    llm_service.py
+
+Responsibilities:
+
+1. Receive verified KPI data
+2. Receive detected alerts
+3. Build structured prompt
+4. Send request to LLM API
+5. Receive summary
+6. Validate response
+7. Save report
+8. Return report to frontend/email
+
+Flow:
+
+KPI Engine
+   |
+   v
+Business Facts JSON
+   |
+   v
+LLM Connector
+   |
+   v
+LLM API
+   |
+   v
+Daily Business Newspaper
+
+=================================================
+14. EMAIL CONNECTOR
+=================================================
+
+Options:
+
+SMTP
+Resend
+SendGrid
+
+Python can use:
+
+smtplib
+email
+
+Daily email contains:
+
+- Revenue
+- Profit
+- Orders
+- Customer changes
+- Major alerts
+- AI summary
+- Recommended focus areas
+
+=================================================
+15. WHATSAPP CONNECTOR
+=================================================
+
+Optional feature.
+
+Recommended:
+
+Twilio WhatsApp API
+
+Flow:
+
+Daily Report
+   |
+   v
+WhatsApp Connector
+   |
+   v
+Twilio
+   |
+   v
+Manager's WhatsApp
+
+Add this AFTER the core system works.
+
+=================================================
+16. AUTOMATION / SCHEDULER
+=================================================
+
+Development:
+
+python daily_data_generator.py
+
+Later:
+
+APScheduler
+or
+Celery + Redis
+or
+Cloud scheduler / cron
+
+Daily automated flow:
+
+1. Generate/receive new sales data
+2. Validate data
+3. Insert into PostgreSQL
+4. Calculate KPIs
+5. Detect alerts
+6. Generate LLM report
+7. Save report
+8. Send email
+9. Optional WhatsApp
+10. Dashboard shows updated data
+
+=================================================
+17. PYTHON REQUIREMENTS.TXT
+=================================================
+
+Initial requirements:
+
+fastapi
+uvicorn[standard]
+pandas
+numpy
+faker
+scikit-learn
+sqlalchemy
+psycopg2-binary
+python-dotenv
+httpx
+openpyxl
+apscheduler
+
+Add only the selected LLM SDK when the provider is finalized.
+
+For OpenAI:
+openai
+
+For Gemini:
+google-generativeai
+
+Do not install every LLM provider unnecessarily.
+
+=================================================
+18. FRONTEND PACKAGE REQUIREMENTS
+=================================================
+
+Core:
+
+react
+react-dom
+react-router-dom
+axios
+recharts
+lucide-react
+tailwindcss
+
+Optional:
+framer-motion
+
+=================================================
+19. PROJECT STRUCTURE
+=================================================
+
+AI-Sales-Intelligence/
+|
++-- backend/
+|   +-- app/
+|   |   +-- main.py
+|   |   +-- routes/
+|   |   +-- services/
+|   |   |   +-- analytics_service.py
+|   |   |   +-- alert_service.py
+|   |   |   +-- llm_service.py
+|   |   |   +-- email_service.py
+|   |   |   +-- whatsapp_service.py
+|   |   +-- db/
+|   |       +-- database.py
+|   |       +-- models.py
+|   |
+|   +-- daily_data_generator.py
+|   +-- requirements.txt
+|   +-- .env
+|   +-- .env.example
+|
++-- frontend/
+|   +-- src/
+|       +-- components/
+|       +-- pages/
+|       +-- services/
+|       |   +-- api.js
+|       |   +-- dashboardApi.js
+|       |   +-- salesApi.js
+|       |   +-- alertApi.js
+|       |   +-- reportApi.js
+|       +-- App.jsx
+|       +-- main.jsx
+|   +-- package.json
+|   +-- tailwind.config.js
+|
++-- data/
+|   +-- historical_sales.csv
+|   +-- generated_daily_sales/
+|
++-- notebooks/
+|   +-- 01_data_exploration.ipynb
+|   +-- 02_data_cleaning.ipynb
+|   +-- 03_business_analysis.ipynb
+|
++-- README.md
+
+=================================================
+20. ENVIRONMENT VARIABLES
+=================================================
+
+.env
+
+DATABASE_URL=postgresql://username:password@host:5432/database
+
+LLM_API_KEY=your_api_key
+
+EMAIL_HOST=your_smtp_host
+EMAIL_PORT=587
+EMAIL_USER=your_email
+EMAIL_PASSWORD=your_password
+
+WHATSAPP_ACCOUNT_SID=your_sid
+WHATSAPP_AUTH_TOKEN=your_token
+WHATSAPP_FROM=your_whatsapp_number
+
+Never commit .env to GitHub.
+
+Create .env.example with placeholders only.
+
+=================================================
+21. DEVELOPMENT TOOLS
+=================================================
+
+IDE:
+VS Code / Antigravity
+
+Version Control:
+Git + GitHub
+
+Python:
+Python 3.x
+
+Node:
+Node.js LTS
+
+Database:
+PostgreSQL
+
+Notebook:
+Jupyter Notebook
+
+API Testing:
+Postman / Swagger UI
+
+=================================================
+22. DEPLOYMENT
+=================================================
+
+Possible options:
+
+Frontend + Backend:
+Render / Railway / AWS / similar platform
+
+Database:
+Managed PostgreSQL
+
+LLM:
+External API
+
+The entire application can be deployed as one project/application if the
+deployment architecture is configured to serve the React build from the
+backend. Alternatively, frontend and backend may be deployed separately
+without changing the core architecture.
+
+=================================================
+23. WHAT WE WILL NOT BUILD INITIALLY
+=================================================
+
+Version 1 will NOT include:
+
+- Training our own Transformer
+- Building an LLM from scratch
+- Complex deep learning
+- Real-time POS integration
+- Complex microservices
+- Kubernetes
+- Advanced MLOps
+
+These can be future improvements.
+
+=================================================
+24. VERSION 1 MVP
+=================================================
+
+The first complete working version should contain:
+
+1. Historical sales dataset
+2. Data cleaning pipeline
+3. Synthetic daily data generator
+4. PostgreSQL database
+5. KPI engine
+6. Business alert engine
+7. FastAPI backend
+8. React dashboard
+9. LLM Daily Business Newspaper
+10. Email delivery
+11. Automated daily update
+
+After MVP:
+
+12. WhatsApp delivery
+13. Forecasting
+14. Anomaly detection
+15. Customer segmentation
+16. Cloud deployment
+
+=================================================
+25. FINAL TECHNOLOGY SUMMARY
+=================================================
+
+DATA SCIENCE:
+Python
+Pandas
+NumPy
+Faker
+Scikit-learn
+
+BACKEND:
+Python
+FastAPI
+Uvicorn
+Pydantic
+SQLAlchemy
+
+DATABASE:
+PostgreSQL
+psycopg2
+
+FRONTEND:
+React
+JavaScript
+Tailwind CSS
+Axios
+Recharts
+Lucide React
+
+AI:
+LLM API
+OpenAI OR Gemini OR Mistral OR Anthropic
+Provider SDK / HTTPX
+
+AUTOMATION:
+APScheduler initially
+Celery + Redis later if needed
+
+EMAIL:
+SMTP / Resend / SendGrid
+
+WHATSAPP:
+Twilio WhatsApp API (optional)
+
+DEVELOPMENT:
+Jupyter
+VS Code / Antigravity
+Git
+GitHub
+Postman / Swagger
+
+DEPLOYMENT:
+Render / Railway / AWS
+Managed PostgreSQL
+
+=================================================
+26. CORE DESIGN PRINCIPLE
+=================================================
+
+DATA -> FACTS -> INSIGHTS -> EXPLANATION -> DELIVERY
+
+NOT:
+
+DATA -> LLM -> RANDOM ANSWER
+
+Python and SQL calculate trustworthy business facts.
+
+The alert engine detects meaningful changes.
+
+The LLM converts those verified facts into a clear Daily Business Newspaper.
+
+This makes the system more reliable, explainable and useful than a dashboard
+that only displays graphs.
