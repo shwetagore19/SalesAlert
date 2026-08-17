@@ -1,7 +1,7 @@
 import json
 from sqlalchemy.orm import Session
-from backend.app.db.models import AlertRecord
-from backend.app.services.analytics_service import AnalyticsService
+from pipeline.models import AlertRecord
+from pipeline.analytics_service import AnalyticsService
 
 class AlertService:
     @classmethod

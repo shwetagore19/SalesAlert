@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from backend.app.services.root_cause_service import RootCauseService
-from backend.app.services.alert_service import AlertService
+from pipeline.root_cause_service import RootCauseService
+from pipeline.alert_service import AlertService
 
 class RecommendationService:
     """

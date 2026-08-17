@@ -21,14 +21,14 @@ def run_daily_alert_workflow(target_date_str: str = None) -> dict:
     Executes the complete 8-step Sales Intelligence pipeline.
     Returns a summary dict of the run results.
     """
-    from backend.app.db.database import SessionLocal, init_db
-    from backend.app.services.analytics_service import AnalyticsService
-    from backend.app.services.alert_service import AlertService
-    from backend.app.services.root_cause_service import RootCauseService
-    from backend.app.services.recommendation_service import RecommendationService
-    from backend.app.services.email_service import EmailService
-    from backend.app.services.data_validation_service import DataValidationService
-    from backend.app.db.models import Sale
+    from pipeline.database import SessionLocal, init_db
+    from pipeline.analytics_service import AnalyticsService
+    from pipeline.alert_service import AlertService
+    from pipeline.root_cause_service import RootCauseService
+    from pipeline.recommendation_service import RecommendationService
+    from pipeline.email_service import EmailService
+    from pipeline.data_validation_service import DataValidationService
+    from pipeline.models import Sale
     from sqlalchemy import inspect
 
     from pathlib import Path
@@ -51,7 +51,7 @@ def run_daily_alert_workflow(target_date_str: str = None) -> dict:
                 target_date_str = datetime.now().strftime("%Y-%m-%d")
 
         logger.info(f"[DailyPipeline] Target date for generation: {target_date_str}")
-        from backend.daily_data_generator import DailyDataGenerator
+        from pipeline.daily_data_generator import DailyDataGenerator
         generator = DailyDataGenerator()
         gen_result = generator.generate_day(target_date_str)
         # generate_day returns a dict with key "records"
@@ -118,10 +118,9 @@ def run_daily_alert_workflow(target_date_str: str = None) -> dict:
         results["steps"].append({"step": "recommendations", "count": len(recommendations)})
         logger.info(f"[DailyPipeline] Step 7 DONE: {len(recommendations)} recommendations generated")
 
-        # ── STEP 8: Build HTML Report & Send Email ────────────────────────────
-        logger.info("[DailyPipeline] Step 8: Building HTML report and delivering email...")
-        html_report = EmailService.build_html_report(kpis, alerts, root_cause, recommendations)
-        delivery = EmailService.send_email(html_report, target_date_str)
+        # ── STEP 8: Generate Newspaper, Build HTML Report & Send Email ────────
+        logger.info("[DailyPipeline] Step 8: Generating insights, building HTML report and delivering email...")
+        delivery = EmailService.send_daily_email(db, target_date_str)
         results["steps"].append({"step": "email", **delivery})
         logger.info(f"[DailyPipeline] Step 8 DONE: {delivery}")
 

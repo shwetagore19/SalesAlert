@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from sqlalchemy.orm import Session
-from backend.app.services.analytics_service import AnalyticsService
+from pipeline.analytics_service import AnalyticsService
 
 class RootCauseService:
     """

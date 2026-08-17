@@ -2,9 +2,9 @@ import os
 import json
 import httpx
 from sqlalchemy.orm import Session
-from backend.app.db.models import DailyReport
-from backend.app.services.analytics_service import AnalyticsService
-from backend.app.services.alert_service import AlertService
+from pipeline.models import DailyReport
+from pipeline.analytics_service import AnalyticsService
+from pipeline.alert_service import AlertService
 
 class LLMService:
     @classmethod
@@ -36,16 +36,27 @@ class LLMService:
         top_prod = prod_perf.get("top_products_by_revenue", [{}])[0].get("product", "N/A")
         top_reg = reg_perf.get("top_region", {}).get("region", "N/A")
 
-        # Check for API key
+        # Check provider and API keys
+        llm_provider = os.getenv("LLM_PROVIDER", "fallback").lower()
         api_key = os.getenv("LLM_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY")
+        report_data = None
 
-        if api_key:
+        if llm_provider == "ollama":
             try:
+                print(f"[LLMService] Attempting Ollama query...")
+                report_data = cls._call_ollama_api(kpis, prod_perf, reg_perf, alerts)
+            except Exception as e:
+                print(f"[LLMService] Ollama query failed ({e}). Trying OpenAI API as backup if configured...")
+
+        if not report_data and api_key:
+            try:
+                print(f"[LLMService] Attempting OpenAI API call...")
                 report_data = cls._call_llm_api(api_key, kpis, prod_perf, reg_perf, alerts)
             except Exception as e:
-                print(f"[LLMService] API call failed ({e}). Falling back to rule-driven report synthesizer.")
-                report_data = cls._synthesize_fallback_report(kpis, prod_perf, reg_perf, alerts)
-        else:
+                print(f"[LLMService] OpenAI API call failed ({e}). Falling back to rule-driven report synthesizer.")
+
+        if not report_data:
+            print("[LLMService] Using rule-driven report synthesizer.")
             report_data = cls._synthesize_fallback_report(kpis, prod_perf, reg_perf, alerts)
 
         # Save to DB
@@ -181,4 +192,46 @@ Respond ONLY with valid JSON. Do not invent any numbers.
             resp.raise_for_status()
             res_json = resp.json()
             content = res_json["choices"][0]["message"]["content"]
+            return json.loads(content)
+
+    @classmethod
+    def _call_ollama_api(cls, kpis: dict, prod_perf: dict, reg_perf: dict, alerts: list) -> dict:
+        url = os.getenv("OLLAMA_URL", "http://localhost:11434/api/chat")
+        model = os.getenv("OLLAMA_MODEL", "llama3")
+        
+        prompt = f"""
+You are an expert executive business analyst. Based strictly on the daily sales facts provided below, generate a JSON object with exactly 5 fields:
+1. headline (string)
+2. executive_summary (string)
+3. top_performers (string)
+4. critical_alerts (string)
+5. recommended_focus (string)
+
+Verified Facts:
+- Date: {kpis.get('date')}
+- Revenue: Rs. {kpis.get('revenue'):,.2f} ({kpis.get('comparisons', {}).get('revenue_dod_pct', 0.0):+.1f}% DoD)
+- Profit: Rs. {kpis.get('profit'):,.2f} ({kpis.get('comparisons', {}).get('profit_dod_pct', 0.0):+.1f}% DoD)
+- Profit Margin: {kpis.get('profit_margin'):.1f}%
+- Orders: {kpis.get('total_orders')}
+- Top Product: {prod_perf.get('top_products_by_revenue', [{}])[0].get('product', 'N/A')}
+- Top Region: {reg_perf.get('top_region', {}).get('region', 'N/A')}
+- Detected Alerts: {json.dumps(alerts)}
+
+Respond ONLY with valid JSON. Do not invent any numbers.
+"""
+        payload = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": "You are a professional business analyst. You respond only with valid JSON."},
+                {"role": "user", "content": prompt}
+            ],
+            "stream": False,
+            "format": "json"
+        }
+        
+        with httpx.Client(timeout=30.0) as client:
+            resp = client.post(url, json=payload)
+            resp.raise_for_status()
+            res_json = resp.json()
+            content = res_json["message"]["content"]
             return json.loads(content)

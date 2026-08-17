@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 DB_URL = os.getenv("DATABASE_URL", "sqlite:///./sales_intelligence.db")
-DATASET_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "historical_sales.csv"))
+DATASET_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "historical_sales.csv"))
 
 # For SQLite, check same thread
 connect_args = {"check_same_thread": False} if DB_URL.startswith("sqlite") else {}
@@ -21,7 +21,7 @@ def get_db():
         db.close()
 
 def init_db():
-    from backend.app.db.models import Sale, DailyKPI, AlertRecord, DailyReport
+    from pipeline.models import Sale, DailyKPI, AlertRecord, DailyReport
     Base.metadata.create_all(bind=engine)
     
     db = SessionLocal()

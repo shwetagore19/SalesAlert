@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from backend.app.db.models import Sale
+from pipeline.models import Sale
 
 class AnalyticsService:
     @staticmethod

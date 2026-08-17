@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text, Boolean
-from backend.app.db.database import Base
+from pipeline.database import Base
 
 class Sale(Base):
     __tablename__ = "sales"

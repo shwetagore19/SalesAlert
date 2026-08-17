@@ -69,7 +69,7 @@ def main():
         logger.info(f"  Triggered At: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         logger.info("=" * 70)
 
-        from backend.app.services.daily_scheduler_service import run_daily_alert_workflow
+        from pipeline.daily_scheduler_service import run_daily_alert_workflow
         result = run_daily_alert_workflow(target_date_str=target)
 
         logger.info("\n" + "=" * 70)
@@ -108,7 +108,7 @@ def main():
         logger.info("  Press Ctrl+C to stop.")
         logger.info("=" * 70)
 
-        from backend.app.services.daily_scheduler_service import start_scheduler
+        from pipeline.daily_scheduler_service import start_scheduler
         try:
             start_scheduler(blocking=True)
         except (KeyboardInterrupt, SystemExit):

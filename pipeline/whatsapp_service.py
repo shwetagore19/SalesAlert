@@ -1,7 +1,7 @@
 import os
 from sqlalchemy.orm import Session
-from backend.app.services.analytics_service import AnalyticsService
-from backend.app.services.llm_service import LLMService
+from pipeline.analytics_service import AnalyticsService
+from pipeline.llm_service import LLMService
 
 class WhatsAppService:
     @classmethod
